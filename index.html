@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum Address Lookup</title>
+</head>
+<body>
+    <h1>Ethereum Address Lookup</h1>
+    <label for="ethAddress">Enter Ethereum Address:</label>
+    <input type="text" id="ethAddress" name="ethAddress">
+    <button onclick="lookupAddress()">Lookup</button>
+    <div id="result"></div>
+
+    <script>
+        function lookupAddress() {
+            var address = document.getElementById('ethAddress').value;
+            // AJAX request to read from JSON file
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var whitelist = JSON.parse(xhr.responseText);
+                        var entry = whitelist[address];
+                        if (entry) {
+                            document.getElementById('result').innerText = "Corresponding entry: " + entry;
+                        } else {
+                            document.getElementById('result').innerText = "No entry found for this address.";
+                        }
+                    } else {
+                        console.error('Failed to load whitelist.');
+                    }
+                }
+            };
+            xhr.open('GET', 'whitelist.json', true);
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
